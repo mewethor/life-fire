@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Life Fire</title>
+<meta name="theme-color" content="#3a3090">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="referrer" content="no-referrer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Life Fire">
+<style>
+:root{--bg:#e9edf6;--panel:#fff;--ink:#1d2140;--mute:#5d6385;--line:#cdd3e6;--gold:#b7791f;--goldbg:#fff3d6;--teal:#0f766e;--tealbg:#d9f2ee;--accent:#4c3fa8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14172e;--panel:#1d2142;--ink:#eceefb;--mute:#9aa1cc;--line:#323865;--gold:#f2b84b;--goldbg:#3a3020;--teal:#4fd1c0;--tealbg:#16363a;--accent:#9d93ff}}
+:root[data-theme="dark"]{--bg:#14172e;--panel:#1d2142;--ink:#eceefb;--mute:#9aa1cc;--line:#323865;--gold:#f2b84b;--goldbg:#3a3020;--teal:#4fd1c0;--tealbg:#16363a;--accent:#9d93ff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif;line-height:1.45}
+main{max-width:620px;margin:0 auto;padding:20px 16px 48px}
+h1,h2,.title{font-family:Metamorphous,Georgia,serif;font-weight:400}
+h1{font-size:1.6rem;margin:0}
+h2{font-size:1.15rem;margin:28px 0 10px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sub{color:var(--mute);font-size:.9rem;margin-top:2px}
+.reset{text-align:right;font-size:.8rem;color:var(--mute)}
+.reset b{display:block;font-size:1.05rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.hero{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:16px}
+.stats{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.lvl{font-family:Metamorphous,serif;font-size:1.2rem}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .5s}
+.q{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px;font:inherit;cursor:pointer}
+.q:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.box{flex:none;width:24px;height:24px;border:2px solid var(--mute);border-radius:6px;margin-top:1px;display:grid;place-items:center;font-size:15px;line-height:1;color:transparent}
+.q .t{flex:1}
+.q .xp{flex:none;font-weight:800;font-size:.85rem;color:var(--teal)}
+.q.done{opacity:.7}
+.q.done .box{background:var(--teal);border-color:var(--teal);color:#fff}
+.q.done .t{text-decoration:line-through}
+.main{background:var(--goldbg);border:2px solid var(--gold);border-radius:14px;padding:16px;margin-top:22px}
+.main .label{color:var(--gold);font-weight:800;font-size:.85rem}
+.main .q{border:0;background:transparent;padding:6px 0 0;margin:0}
+.main .t{font-family:Metamorphous,serif;font-size:1.25rem}
+.main .xp{color:var(--gold);font-size:1rem}
+.main .box{border-color:var(--gold);width:30px;height:30px}
+.main .q.done .box{background:var(--gold);border-color:var(--gold)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.btn{font:inherit;font-size:.85rem;font-weight:600;background:none;color:var(--accent);border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.btn[disabled]{opacity:.45;cursor:default}
+.bonus summary{cursor:pointer;list-style:none}
+.bonus summary::-webkit-details-marker{display:none}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:800;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* app shell */
+[hidden]{display:none!important}
+:root{padding-top:0;padding-bottom:0}
+html,body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+main{max-width:480px;padding:0 16px 110px}
+header{margin:0 -16px;padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 58px;background:linear-gradient(160deg,#4c3fa8,#2a2370);color:#fff;border-radius:0 0 28px 28px;align-items:center}
+header h1{color:#fff;font-size:1.5rem}
+header .sub,header .reset{color:#d6d2ff}
+header .reset b{color:#fff;font-size:1.15rem}
+.hero{position:relative;margin-top:-38px;border-radius:20px;border:0;box-shadow:0 6px 20px rgba(20,23,46,.18);padding:16px 18px}
+.bar{height:12px}
+h2{font-size:1.05rem;margin:24px 0 10px}
+.q{border-radius:16px;padding:14px 16px;min-height:58px;align-items:center;border:0;box-shadow:0 1px 3px rgba(20,23,46,.14);transition:transform .12s}
+.q:active{transform:scale(.97)}
+.box{width:28px;height:28px;border-radius:50%;margin:0}
+.q .xp{background:var(--tealbg);padding:3px 10px;border-radius:999px}
+.main{border-radius:22px;padding:18px;margin-top:22px}
+.main .q{box-shadow:none;padding:10px 0 0;min-height:0;align-items:flex-start}
+.main .box{margin-top:2px}
+.main .q .xp{background:var(--gold);color:#fff}
+.main .label{font-size:.9rem}
+.btn{border-radius:999px;padding:7px 14px;background:var(--panel)}
+.toast{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;background:var(--panel);border-top:1px solid var(--line);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--mute);font:inherit;font-size:.75rem;font-weight:600;min-height:52px;cursor:pointer}
+.tabs button span{font-size:1.4rem;line-height:1}
+.tabs button[aria-selected="true"]{color:var(--accent);font-weight:800}
+.tabs button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.stats{align-items:center;gap:12px;flex-wrap:nowrap}
+.avatar{flex:none;width:48px;height:48px;border-radius:50%;background:var(--goldbg);border:2px solid var(--gold);display:grid;place-items:center;font-size:1.7rem}
+.who{flex:1;min-width:0}
+.coin{font-weight:800;color:var(--gold);white-space:nowrap}
+.shopcard{display:flex;gap:12px;align-items:center;background:var(--panel);border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgba(20,23,46,.14)}
+.shopcard .fz{font-size:2rem}
+.shopcard .grow{flex:1;min-width:0}
+.avbar{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px}
+.av{flex:none;width:80px;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--panel);border:2px solid transparent;border-radius:16px;padding:10px 4px;font:inherit;color:var(--ink);cursor:pointer}
+.av .e{font-size:2rem;line-height:1}
+.av .p{font-size:.75rem;font-weight:800;color:var(--mute)}
+.av.on{border-color:var(--gold)}
+.av:disabled{opacity:.5;cursor:default}
+.av:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mindcard{background:var(--panel);border-radius:20px;padding:18px;box-shadow:0 1px 3px rgba(20,23,46,.14)}
+.qtext{font-family:Metamorphous,Georgia,serif;font-size:1.2rem;margin:6px 0 14px}
+.big{font-family:Metamorphous,Georgia,serif;font-size:1.8rem;margin:6px 0}
+.opt{display:block;width:100%;text-align:left;font:inherit;background:var(--bg);color:var(--ink);border:2px solid transparent;border-radius:14px;padding:14px 16px;margin-bottom:8px;min-height:52px;cursor:pointer}
+.opt:active{transform:scale(.98)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.opt.right{background:var(--tealbg);border-color:var(--teal)}
+.opt.right::after{content:" \2713"}
+.opt.wrong{border-color:#d1435b}
+.opt.wrong::after{content:" \2717"}
+.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.go{background:var(--accent);color:var(--bg);border-color:var(--accent);margin-top:6px;padding:10px 22px}
+/* light-weight rendering for low-power phones */
+.q,.shopcard,.mindcard,.hero{box-shadow:none;border:1px solid var(--line)}
+.main .q{border:0}
+.q{transition:none}
+.q:active,.opt:active{transform:none;opacity:.8}
+.bar i{width:100%;transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.toast{transform:translate(-50%,0);transition:opacity .2s}
+#onb{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 24px) 20px calc(env(safe-area-inset-bottom,0px) + 30px)}
+.onbin{max-width:440px;margin:0 auto}
+.onbin h1{font-size:1.7rem;margin:0 0 4px}
+.onbin label,.onbin .lab{display:block;font-weight:800;margin:18px 0 6px}
+.onbin input,.onbin select{width:100%;font:inherit;font-size:1rem;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);min-height:48px}
+.onbin input:focus-visible,.onbin select:focus-visible,.chip:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-weight:600;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:999px;padding:10px 16px;min-height:44px;cursor:pointer}
+.chip.on{border-color:var(--accent);background:var(--accent);color:var(--bg)}
+.err{color:#d1435b;font-weight:600;min-height:1.4em;margin:12px 0 4px}
+.onbin .go{width:100%;padding:14px;font-size:1rem;margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div><h1>Life Fire</h1><div class="sub" id="date"></div></div>
+  <div class="reset">New quests in<b id="timer">--:--:--</b></div>
+</header>
+
+<section class="hero" aria-label="Progress">
+  <div class="stats"><span class="avatar" id="avatar" aria-hidden="true"></span><div class="who"><div class="lvl" id="lvl"></div><div class="sub" id="streak"></div></div><span class="coin" id="coins"></span></div>
+  <div class="bar"><i id="xpbar"></i></div>
+  <div class="sub" id="xptxt" style="margin-top:6px"></div>
+</section>
+
+<div id="todayView">
+<section class="main" aria-label="Main quest">
+  <div class="label">Main quest · 100 XP</div>
+  <div id="mainq"></div>
+</section>
+
+<div class="row"><h2>Mini quests</h2><button class="btn" id="reroll">Swap one (1 left)</button></div>
+<div id="minis"></div>
+</div>
+
+<section id="bonusView" hidden>
+  <h2>Bonus quests <span class="sub" id="bcount"></span></h2>
+  <p class="sub" style="margin:-4px 0 12px">Optional. Do as many as you like for +10 XP each.</p>
+  <div id="bonus"></div>
+</section>
+<section id="shopView" hidden>
+  <div class="row"><h2>Shop</h2><span class="coin" id="shopcoins"></span></div>
+  <div class="shopcard"><div class="fz" aria-hidden="true">❄️</div><div class="grow"><div class="title">Streak freeze</div><div class="sub">Saves your streak if you miss a day. <span id="fcount"></span></div></div><button class="btn" id="freeze" type="button"></button></div>
+  <h2>Avatars</h2>
+  <div class="avbar" id="avbar"></div>
+  <p class="sub">Earn coins from quests: 20 for the main quest, 5 for each mini, 2 for each bonus.</p>
+  <p style="margin:16px 0 0"><button class="btn" id="editp" type="button"></button></p>
+</section>
+<section id="mindView" hidden>
+  <h2>Mind game</h2>
+  <div class="mindcard" id="mindbox"></div>
+  <p class="sub" style="margin-top:12px">One round per quest day. Each right answer gives 8 XP and 2 coins. A perfect round adds 25 XP and 10 coins.</p>
+</section>
+</main>
+<nav class="tabs" aria-label="Sections">
+  <button type="button" data-v="today" aria-selected="true"><span>⚔️</span>Today</button>
+  <button type="button" data-v="bonus" aria-selected="false"><span>⭐</span>Bonus</button>
+  <button type="button" data-v="mind" aria-selected="false"><span>🧠</span>Mind</button>
+  <button type="button" data-v="shop" aria-selected="false"><span>🛍️</span>Shop</button>
+</nav>
+<div id="onb" role="dialog" aria-modal="true" aria-labelledby="o-title" hidden>
+ <div class="onbin">
+  <h1 id="o-title" data-o="welcome"></h1>
+  <p class="sub" data-o="intro"></p>
+  <label for="o-lang" data-o="lang"></label>
+  <select id="o-lang"><option value="en">English</option><option value="es">Español</option><option value="fr">Français</option></select>
+  <label for="o-name" data-o="name"></label>
+  <input id="o-name" maxlength="20" autocomplete="given-name">
+  <label for="o-age" data-o="age"></label>
+  <input id="o-age" type="number" inputmode="numeric" min="12" max="110">
+  <label for="o-country" data-o="country"></label>
+  <select id="o-country"></select>
+  <div class="lab" data-o="role"></div><div class="chips" id="o-role"></div>
+  <div id="o-gradewrap" hidden><div class="lab" data-o="grade"></div><div class="chips" id="o-grade"></div></div>
+  <div id="o-err" class="err" role="alert"></div>
+  <button type="button" class="btn go" id="o-go" data-o="start"></button>
+ </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const MAIN=["Take a 30-minute walk without your phone","Cook a meal from scratch you’ve never made","Call someone you haven’t spoken to in a month","Visit a place in your town you’ve never been","Spend one hour on a project you keep putting off","Declutter one room completely","Learn and practise a new skill for 45 minutes","Do a favour for a stranger or neighbour","Go a full evening with no screens","Write a letter and actually send it","Exercise for 30 minutes at a level that’s hard","Have a real conversation with someone new"];
+const MINI=["Drink a full glass of water right now","Make your bed","Do 20 squats or push-ups","Stretch for 5 minutes","Text someone a genuine compliment","Tidy your desk","Step outside for 10 minutes of fresh air","Write down 3 things you’re grateful for","Take 10 slow, deep breaths","Fix one small thing you’ve been ignoring","Learn one new word and use it today","Eat a piece of fruit or a vegetable","Unsubscribe from 3 emails","Put your phone in another room for 30 minutes","Read 10 pages of a book","Wash the dishes straight after eating","Take a photo of something beautiful","Say thank you to someone in person","Plan tomorrow’s top priority","Hold a plank for 45 seconds"];
+const BONUS=["Smile at a stranger","Hold a door open for someone","Find something to recycle","Listen to a song you loved as a teenager","Draw something for 5 minutes","Sit in silence for 3 minutes","Reply to a message you’ve been avoiding","Do a 2-minute tidy of your bag or pockets","Learn a fact and tell someone","Compliment a stranger","Take the stairs every time today","Stand up and move every hour","Water a plant","Write one sentence of a story","Try a food you don’t usually eat","Walk around the block","Back up your phone photos","Say good morning to a neighbour","Do a 1-minute handstand attempt or wall sit","Dance to one full song","Delete 20 old photos","Floss or do an extra skincare step","Organise one drawer","Tell someone something you appreciate about them","Look at the sky for a full minute","Give your full attention to one conversation","Drink tea or coffee without any distractions","Make a short to-do list for the weekend","Rate or review something you love","Do something kind for yourself"];
+const XP={main:100,mini:25,bonus:10},COIN={main:20,mini:5,bonus:2},PER_LEVEL=200;
+const FREEZE={cost:40,max:2};
+const AVATARS=[{e:"🧙",n:"Wizard",c:0},{e:"🦊",n:"Fox",c:30},{e:"🐉",n:"Dragon",c:60},{e:"🤖",n:"Robot",c:80},{e:"🦄",n:"Unicorn",c:100},{e:"👑",n:"Crown",c:150}];
+
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){let a=seed;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function pick(pool,n,r){const idx=pool.map((_,i)=>i);for(let i=idx.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}return idx.slice(0,n)}
+const DAY=86400000;
+let TZF=null;
+const devTz=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"}catch(e){return"UTC"}};
+const getTz=()=>(S.profile&&S.profile.tz)||devTz();
+function tzParts(){
+  const z=getTz();
+  if(!TZF||TZF.z!==z){const o={hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"};let f;try{f=new Intl.DateTimeFormat("en-CA",Object.assign({timeZone:z},o))}catch(e){f=new Intl.DateTimeFormat("en-CA",o)}TZF={z,f}}
+  const r={};TZF.f.formatToParts(new Date()).forEach(p=>r[p.type]=p.value);return r}
+const today=()=>{const o=tzParts();return o.year+"-"+o.month+"-"+o.day};
+const dayNum=k=>Math.floor(Date.parse(k+"T00:00:00Z")/DAY);
+const cyc=()=>dayNum(today());
+
+let S={xp:0,streak:0,last:"",done:{},swap:{},used:{},coins:0,freezes:0,avs:["🧙"],av:"🧙"};
+function sanitize(o){
+  const r={};if(!o||typeof o!=="object")return r;
+  const n=(v,lo,hi)=>Number.isFinite(v)?Math.min(hi,Math.max(lo,Math.floor(v))):0;
+  const dk=/^\d{4}-\d{2}-\d{2}$/;
+  r.xp=n(o.xp,0,1e7);r.coins=n(o.coins,0,1e7);r.streak=n(o.streak,0,36500);r.freezes=n(o.freezes,0,FREEZE.max);
+  r.last=typeof o.last==="string"&&dk.test(o.last)?o.last:"";
+  if(Number.isFinite(o.anchor)&&o.anchor>0)r.anchor=o.anchor;
+  r.done={};r.swap={};r.used={};
+  const each=(src,fn)=>{if(src&&typeof src==="object")Object.keys(src).forEach(k=>{if(dk.test(k))fn(k,src[k])})};
+  each(o.done,(k,v)=>{if(Array.isArray(v))r.done[k]=v.filter(s=>typeof s==="string"&&/^[a-z0-9-]{1,30}$/.test(s)).slice(0,40)});
+  each(o.swap,(k,v)=>{if(v&&typeof v==="object"){r.swap[k]={};["0","1","2"].forEach(s=>{if(Number.isFinite(v[s]))r.swap[k][s]=n(v[s],0,500)})}});
+  each(o.used,(k,v)=>{r.used[k]=v?1:0});
+  const ids=AVATARS.map(a=>a.e);
+  r.avs=Array.isArray(o.avs)?o.avs.filter(e=>ids.includes(e)):[];
+  if(!r.avs.includes(ids[0]))r.avs.unshift(ids[0]);
+  r.av=r.avs.includes(o.av)?o.av:ids[0];
+  const m=o.mind;
+  if(m&&typeof m==="object"&&typeof m.d==="string"&&dk.test(m.d))r.mind={d:m.d,i:n(m.i,-1,5),s:n(m.s,0,5),a:typeof m.a==="string"?m.a.slice(0,80):null};
+  const p=o.profile;
+  if(p&&typeof p==="object"&&typeof p.name==="string"&&typeof p.tz==="string"){
+    const age=n(p.age,0,150);
+    let tzok=false;try{new Intl.DateTimeFormat("en",{timeZone:p.tz});tzok=true}catch(e){}
+    if(tzok&&age>=12&&age<=110&&["student","uni","parent"].includes(p.role)&&["en","es","fr"].includes(p.lang))
+      r.profile={name:p.name.replace(/[<>&"'`\\]/g,"").trim().slice(0,20)||"Hero",age,lang:p.lang,role:p.role,grade:p.role==="student"?n(p.grade,6,12):0,tz:p.tz};
+  }
+  return r}
+try{const raw=localStorage.getItem("dq-state");if(raw)S=Object.assign(S,sanitize(JSON.parse(raw)))}catch(e){}
+function save(){try{localStorage.setItem("dq-state",JSON.stringify(S))}catch(e){}}
+if(!S.anchor){S.anchor=Date.now();save()}
+
+let D=today();
+function quests(){
+  const r=rng(hash(D+"|"+S.anchor));
+  let main=pick(MAIN,1,r)[0];
+  let mini=pick(MINI,3,r);
+  const X=EX[band()];
+  if(X){const e=MINI0.length+Math.floor(r()*X.mini.length);mini=[e].concat(mini.filter(i=>i!==e)).slice(0,3);if(r()<.7)main=MAIN0.length+Math.floor(r()*X.main.length)}
+  const bonus=pick(BONUS,10,r);
+  const sw=S.swap[D]||{};
+  Object.keys(sw).forEach(k=>mini[k]=sw[k]);
+  return{main,mini,bonus};
+}
+const isDone=k=>(S.done[D]||[]).includes(k);
+
+function complete(k,kind){
+  if(isDone(k))return;
+  (S.done[D]=S.done[D]||[]).push(k);
+  S.xp+=XP[kind];S.coins+=COIN[kind];
+  if(kind==="main"){
+    if(S.last!==D){
+      const li=dayNum(String(S.last)),miss=cyc()-li-1;
+      if(isNaN(li)){S.streak=1}
+      else if(miss<=0){S.streak+=1}
+      else if(miss<=S.freezes){S.freezes-=miss;S.streak+=1}
+      else{S.streak=1}
+      S.last=D}
+  }
+  save();
+  const before=Math.floor((S.xp-XP[kind])/PER_LEVEL);
+  toast(Math.floor(S.xp/PER_LEVEL)>before?"Level up! You’re now level "+(Math.floor(S.xp/PER_LEVEL)+1):"+"+XP[kind]+" XP, +"+COIN[kind]+" coins");
+  render();
+}
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),1800)}
+
+function qEl(text,k,kind){
+  const b=document.createElement("button");b.type="button";
+  const d=isDone(k);b.className="q"+(d?" done":"");
+  b.setAttribute("aria-pressed",d);
+  b.innerHTML='<span class="box">✓</span><span class="t"></span><span class="xp">+'+XP[kind]+'</span>';
+  b.querySelector(".t").textContent=text;
+  b.onclick=()=>complete(k,kind);
+  return b;
+}
+function render(){
+  if(today()!==D){D=today();prune()}
+  const q=quests();
+  document.getElementById("date").textContent=t("hi")+", "+((S.profile&&S.profile.name)||"");
+  const m=document.getElementById("mainq");m.innerHTML="";m.appendChild(qEl(MAIN[q.main],"main","main"));
+  const mi=document.getElementById("minis");mi.innerHTML="";
+  q.mini.forEach((i,s)=>mi.appendChild(qEl(MINI[i],"mini"+s+"-"+i,"mini")));
+  const bo=document.getElementById("bonus");if(view==="bonus")bo.innerHTML="";
+  let bd=0;q.bonus.forEach(i=>{if(isDone("bonus"+i))bd++;if(view==="bonus")bo.appendChild(qEl(BONUS[i],"bonus"+i,"bonus"))});
+  document.getElementById("bcount").textContent="("+bd+"/10)";
+  const lvl=Math.floor(S.xp/PER_LEVEL)+1,into=S.xp%PER_LEVEL;
+  document.getElementById("lvl").textContent=t("level")+" "+lvl;
+  document.getElementById("streak").textContent=(S.streak?("🔥 "+S.streak+t("streak")):t("nostreak"))+(S.freezes?"  ❄️ "+S.freezes:"");
+  document.getElementById("xptxt").textContent=into+" / "+PER_LEVEL+" XP";
+  document.getElementById("xpbar").style.transform="scaleX("+into/PER_LEVEL+")";
+  renderShop();if(view==="mind")renderMind();
+  const left=1-(S.used[D]||0);
+  const rb=document.getElementById("reroll");
+  rb.textContent=t("swap")+" ("+left+")";rb.disabled=left<1||q.mini.every((_,s)=>isDone("mini"+s+"-"+q.mini[s]));
+}
+document.getElementById("reroll").onclick=()=>{
+  if(S.used[D])return;
+  const q=quests();
+  const slots=q.mini.map((_,s)=>s).filter(s=>!isDone("mini"+s+"-"+q.mini[s]));
+  if(!slots.length)return;
+  const slot=slots[Math.floor(Math.random()*slots.length)];
+  const avail=MINI.map((_,i)=>i).filter(i=>!q.mini.includes(i));
+  (S.swap[D]=S.swap[D]||{})[slot]=avail[Math.floor(Math.random()*avail.length)];
+  S.used[D]=1;save();render();toast("Quest swapped");
+};
+function renderShop(){
+  document.getElementById("avatar").textContent=S.av;
+  document.getElementById("coins").textContent="🪙 "+S.coins;
+  document.getElementById("shopcoins").textContent="🪙 "+S.coins;
+  const f=document.getElementById("freeze");
+  f.disabled=S.coins<FREEZE.cost||S.freezes>=FREEZE.max;
+  f.textContent=S.freezes>=FREEZE.max?"Max owned":"Buy for 🪙 "+FREEZE.cost;
+  document.getElementById("fcount").textContent="You have "+S.freezes+" of "+FREEZE.max+".";
+  const bar=document.getElementById("avbar");bar.innerHTML="";
+  AVATARS.forEach(a=>{
+    const own=S.avs.includes(a.e),on=S.av===a.e;
+    const b=document.createElement("button");b.type="button";b.className="av"+(on?" on":"");
+    b.setAttribute("aria-label",a.n+(own?(on?", equipped":", owned"):", costs "+a.c+" coins"));
+    b.innerHTML='<span class="e">'+a.e+'</span><span class="p">'+(on?"Equipped":own?"Equip":"🪙 "+a.c)+'</span>';
+    b.disabled=!own&&S.coins<a.c;
+    b.onclick=()=>{if(own){S.av=a.e}else if(S.coins>=a.c){S.coins-=a.c;S.avs.push(a.e);S.av=a.e;toast(a.n+" unlocked")}save();render()};
+    bar.appendChild(b)});
+}
+function buyFreeze(){if(S.coins>=FREEZE.cost&&S.freezes<FREEZE.max){S.coins-=FREEZE.cost;S.freezes++;save();render();toast("Streak freeze added")}}
+const MIND=[["What has keys but can’t open locks?","A piano","A map","A clock","A river"],["What comes next: 2, 4, 8, 16, ?","32","24","30","36"],["How many sides does a hexagon have?","6","5","7","8"],["Which planet is known as the Red Planet?","Mars","Venus","Jupiter","Mercury"],["A farmer has 17 sheep. All but 9 run away. How many are left?","9","8","17","0"],["What comes next: Mon, Wed, Fri, ?","Sun","Sat","Tue","Thu"],["Which is heavier: a kilogram of feathers or a kilogram of steel?","They weigh the same","Feathers","Steel","It depends on the day"],["What is 15% of 200?","30","15","20","35"],["Which is the largest ocean?","Pacific","Atlantic","Indian","Arctic"],["I speak without a mouth and hear without ears. What am I?","An echo","A shadow","A ghost","A radio"],["How many minutes are in 2.5 hours?","150","120","130","180"],["Which one does not belong: Apple, Banana, Carrot, Grape?","Carrot","Apple","Banana","Grape"],["Which of these is a prime number?","13","9","15","21"],["What gets wetter the more it dries?","A towel","A sponge","A cloud","A river"],["How many continents are there?","7","5","6","8"],["What is 7 × 8?","56","54","48","64"],["Which animal is the fastest on land?","Cheetah","Lion","Horse","Greyhound"],["How many months have 28 days?","All 12","1","2","6"],["What comes next: 1, 1, 2, 3, 5, 8, ?","13","11","12","14"],["What is the chemical symbol for gold?","Au","Ag","Go","Gd"]];
+const MAIN0=MAIN.slice(),MINI0=MINI.slice(),MIND0=MIND.slice();
+const COUNTRIES=[["United States (Eastern)","America/New_York"],["United States (Central)","America/Chicago"],["United States (Mountain)","America/Denver"],["United States (Pacific)","America/Los_Angeles"],["Canada (Eastern)","America/Toronto"],["Canada (Pacific)","America/Vancouver"],["Mexico","America/Mexico_City"],["Brazil","America/Sao_Paulo"],["Argentina","America/Argentina/Buenos_Aires"],["Colombia","America/Bogota"],["Chile","America/Santiago"],["United Kingdom","Europe/London"],["Ireland","Europe/Dublin"],["France","Europe/Paris"],["Germany","Europe/Berlin"],["Spain","Europe/Madrid"],["Portugal","Europe/Lisbon"],["Italy","Europe/Rome"],["Netherlands","Europe/Amsterdam"],["Poland","Europe/Warsaw"],["Turkey","Europe/Istanbul"],["Russia (Moscow)","Europe/Moscow"],["Egypt","Africa/Cairo"],["Nigeria","Africa/Lagos"],["Kenya","Africa/Nairobi"],["South Africa","Africa/Johannesburg"],["Saudi Arabia","Asia/Riyadh"],["United Arab Emirates","Asia/Dubai"],["India","Asia/Kolkata"],["Pakistan","Asia/Karachi"],["Bangladesh","Asia/Dhaka"],["China","Asia/Shanghai"],["Japan","Asia/Tokyo"],["South Korea","Asia/Seoul"],["Philippines","Asia/Manila"],["Indonesia (Jakarta)","Asia/Jakarta"],["Singapore","Asia/Singapore"],["Australia (Sydney)","Australia/Sydney"],["Australia (Perth)","Australia/Perth"],["New Zealand","Pacific/Auckland"]];
+const EX={
+ mid:{main:["Teach someone at home one thing you learned at school this week","Finish your homework before any games or videos"],mini:["Pack your school bag for tomorrow","Review today’s notes for 5 minutes","Read for 15 minutes"],mind:[["What is 3/4 as a decimal?","0.75","0.34","0.25","0.5"],["Which gas do plants take in for photosynthesis?","Carbon dioxide","Oxygen","Nitrogen","Helium"],["Which word is a noun: run, quickly, table, blue?","Table","Run","Quickly","Blue"],["What is 9 squared?","81","18","72","99"]]},
+ high:{main:["Study your hardest subject for 45 focused minutes with your phone away","Make a study plan for your next test"],mini:["Summarise today’s toughest lesson in 3 sentences","Solve 5 practice problems","Write down one question about something you didn’t understand"],mind:[["Solve: 2x + 6 = 14. What is x?","4","3","5","10"],["Which part of the cell is the powerhouse?","Mitochondria","Nucleus","Ribosome","Vacuole"],["Which formula gives the area of a circle?","πr²","2πr","πr","2πr²"],["In which year did World War II end?","1945","1918","1939","1950"]]},
+ uni:{main:["Do a 90-minute deep study block with no notifications","Outline your next assignment from start to finish"],mini:["Review your lecture notes from today","Email a lecturer or tutor about something you’re unsure of","Plan tomorrow’s classes and deadlines"],mind:[["What does GPA stand for?","Grade point average","General performance assessment","Graduate placement average","Grade progress analysis"],["What is a thesis statement?","The main claim of an essay","A list of sources","The conclusion","A title page"],["What is the Pomodoro technique?","Focused 25-minute work sessions with breaks","Studying all night","Memorising in one sitting","Studying only with music"],["Which study method helps you remember longest?","Spaced repetition","Cramming once","Only rereading","Highlighting everything"]]},
+ parent:{main:["Spend 30 minutes of device-free time with your child","Cook a meal together as a family"],mini:["Ask your child one question about their day and really listen","Read together for 10 minutes","Tell your child something you’re proud of"],mind:[["How much sleep do most teenagers need each night?","8 to 10 hours","4 to 5 hours","6 hours","12 to 14 hours"],["What is a good way to help with homework?","Ask guiding questions","Do it for them","Let them guess","Skip the hard parts"],["Praising effort rather than talent encourages a...","Growth mindset","Fixed mindset","Fear of failure","Short attention span"],["Which habit helps a child’s reading most?","Reading together daily","Reading only at school","Never reading aloud","Only watching videos"]]}
+};
+const L={
+ en:{title:"Life Fire",reset:"New quests in",today:"Today",bonus:"Bonus",mind:"Mind",shop:"Shop",main:"Main quest",minis:"Mini quests",bonusq:"Bonus quests",mindg:"Mind game",avatars:"Avatars",level:"Level",streak:"-day streak",nostreak:"No streak yet",swap:"Swap one",hi:"Hi",edit:"Edit profile",welcome:"Create your hero",intro:"A few quick questions so your quests fit you.",lang:"Language",name:"Your name",age:"Your age",country:"Where do you live?",role:"I am a",student:"Student",uni:"University student",parent:"Parent",grade:"Your grade",start:"Start my adventure",errName:"Enter your name.",errAge:"Enter a valid age.",errMin:"You must be at least 12 to use Life Fire.",errRole:"Choose whether you are a student, university student or parent.",errGrade:"Choose your grade."},
+ es:{title:"Life Fire",reset:"Nuevas misiones en",today:"Hoy",bonus:"Extra",mind:"Mente",shop:"Tienda",main:"Misión principal",minis:"Minimisiones",bonusq:"Misiones extra",mindg:"Juego mental",avatars:"Avatares",level:"Nivel",streak:" días de racha",nostreak:"Sin racha aún",swap:"Cambiar una",hi:"Hola",edit:"Editar perfil",welcome:"Crea tu héroe",intro:"Unas preguntas rápidas para adaptar tus misiones.",lang:"Idioma",name:"Tu nombre",age:"Tu edad",country:"¿Dónde vives?",role:"Soy",student:"Estudiante",uni:"Estudiante universitario",parent:"Padre o madre",grade:"Tu curso",start:"Empezar mi aventura",errName:"Escribe tu nombre.",errAge:"Escribe una edad válida.",errMin:"Debes tener al menos 12 años para usar Life Fire.",errRole:"Elige si eres estudiante, universitario o padre/madre.",errGrade:"Elige tu curso."},
+ fr:{title:"Life Fire",reset:"Nouvelles quêtes dans",today:"Aujourd’hui",bonus:"Bonus",mind:"Esprit",shop:"Boutique",main:"Quête principale",minis:"Mini-quêtes",bonusq:"Quêtes bonus",mindg:"Jeu d’esprit",avatars:"Avatars",level:"Niveau",streak:" jours de suite",nostreak:"Pas encore de série",swap:"Changer une",hi:"Salut",edit:"Modifier le profil",welcome:"Crée ton héros",intro:"Quelques questions rapides pour adapter tes quêtes.",lang:"Langue",name:"Ton prénom",age:"Ton âge",country:"Où habites-tu ?",role:"Je suis",student:"Élève",uni:"Étudiant à l’université",parent:"Parent",grade:"Ta classe",start:"Commencer l’aventure",errName:"Entre ton prénom.",errAge:"Entre un âge valide.",errMin:"Tu dois avoir au moins 12 ans pour utiliser Life Fire.",errRole:"Choisis : élève, étudiant ou parent.",errGrade:"Choisis ta classe."}
+};
+let LANG="en";
+const t=k=>(L[LANG]||L.en)[k]||L.en[k];
+function band(){const p=S.profile;if(!p)return null;if(p.role==="parent")return"parent";if(p.role==="uni")return"uni";return p.grade>=9?"high":"mid"}
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.querySelector("header h1").textContent=t("title");
+  document.querySelector(".reset").firstChild.nodeValue=t("reset");
+  document.querySelectorAll(".tabs button").forEach((b,i)=>b.lastChild.nodeValue=t(["today","bonus","mind","shop"][i]));
+  document.querySelector("#todayView .label").textContent=t("main")+" · 100 XP";
+  document.querySelector("#todayView .row h2").textContent=t("minis");
+  document.querySelector("#bonusView h2").firstChild.nodeValue=t("bonusq")+" ";
+  document.querySelector("#mindView h2").textContent=t("mindg");
+  const hs=document.querySelectorAll("#shopView h2");hs[0].textContent=t("shop");hs[1].textContent=t("avatars");
+  document.getElementById("editp").textContent=t("edit");
+}
+function applyProfile(){
+  const x=EX[band()];
+  MAIN.length=0;MAIN.push(...MAIN0,...(x?x.main:[]));
+  MINI.length=0;MINI.push(...MINI0,...(x?x.mini:[]));
+  MIND.length=0;MIND.push(...MIND0,...(x?x.mind:[]));
+  applyLang();
+}
+let ob={role:"",grade:0};
+function chips(id,items,key){const box=document.getElementById(id);box.innerHTML="";items.forEach(([v,label])=>{const b=document.createElement("button");b.type="button";b.className="chip"+(ob[key]===v?" on":"");b.textContent=label;b.setAttribute("aria-pressed",ob[key]===v);b.onclick=()=>{ob[key]=v;drawOnb()};box.appendChild(b)})}
+function drawOnb(){
+  document.querySelectorAll("[data-o]").forEach(e=>e.textContent=t(e.dataset.o));
+  chips("o-role",[["student",t("student")],["uni",t("uni")],["parent",t("parent")]],"role");
+  document.getElementById("o-gradewrap").hidden=ob.role!=="student";
+  chips("o-grade",[6,7,8,9,10,11,12].map(n=>[n,String(n)]),"grade");
+}
+function openOnb(){
+  const cs=document.getElementById("o-country"),ls=document.getElementById("o-lang"),p=S.profile;
+  if(!cs.options.length){COUNTRIES.forEach(c=>cs.add(new Option(c[0],c[1])));cs.add(new Option("Other (use device time zone)","device"));const d=COUNTRIES.find(c=>c[1]===devTz());cs.value=d?d[1]:"device"}
+  if(p){ob={role:p.role,grade:p.grade};document.getElementById("o-name").value=p.name;document.getElementById("o-age").value=p.age;cs.value=p.tz;if(cs.value!==p.tz)cs.value="device"}
+  ls.value=LANG;ls.onchange=()=>{LANG=ls.value;drawOnb()};
+  document.getElementById("o-err").textContent="";
+  document.getElementById("onb").hidden=false;drawOnb();
+}
+function finishOnb(){
+  const name=document.getElementById("o-name").value.replace(/[<>&"'`\\]/g,"").trim(),age=parseInt(document.getElementById("o-age").value,10),err=document.getElementById("o-err");
+  const e=!name?"errName":!(age>0)||age>110?"errAge":age<12?"errMin":!ob.role?"errRole":(ob.role==="student"&&!ob.grade)?"errGrade":"";
+  if(e){err.textContent=t(e);return}
+  const z=document.getElementById("o-country").value;
+  S.profile={name:name.slice(0,20),age,lang:LANG,role:ob.role,grade:ob.role==="student"?ob.grade:0,tz:z==="device"?devTz():z};
+  save();document.getElementById("onb").hidden=true;
+  TZF=null;D=today();applyProfile();prune();render();window.scrollTo(0,0);
+}
+function grant(xp,c,msg){const b=Math.floor(S.xp/PER_LEVEL);S.xp+=xp;S.coins+=c;toast(Math.floor(S.xp/PER_LEVEL)>b?"Level up! You’re now level "+(Math.floor(S.xp/PER_LEVEL)+1):msg)}
+function mindState(){if(!S.mind||S.mind.d!==D)S.mind={d:D,i:-1,s:0,a:null};return S.mind}
+function mindQs(){const r=rng(hash("m"+D+"|"+S.anchor)),X=EX[band()];let ids=pick(MIND,5,r);if(X){const e=pick(X.mind,2,r).map(i=>MIND0.length+i);ids=e.concat(ids.filter(i=>!e.includes(i))).slice(0,5)}return ids.map(i=>MIND[i])}
+function renderMind(){
+  const m=mindState(),box=document.getElementById("mindbox");box.innerHTML="";
+  const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;box.appendChild(e);return e};
+  if(m.i<0){el("p","sub","Five quick questions: riddles, logic and general knowledge. Ready?");const b=el("button","btn go","Start round");b.type="button";b.onclick=()=>{m.i=0;save();renderMind()};return}
+  if(m.i>=5){el("div","sub","Round complete");el("div","big",m.s+" / 5 correct");el("p","",m.s===5?"Perfect score. You earned the bonus.":m.s>=3?"Nice work.":"Good effort. Try again in your next round.");el("p","sub","You earned "+(m.s*8+(m.s===5?25:0))+" XP and "+(m.s*2+(m.s===5?10:0))+" coins. A new round unlocks when your next quests arrive.");return}
+  const q=mindQs()[m.i],r=rng(hash(D+m.i));
+  const opts=q.slice(1).map(v=>[r(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  el("div","sub","Question "+(m.i+1)+" of 5");
+  el("div","qtext",q[0]);
+  opts.forEach(o=>{const b=el("button","opt",o);b.type="button";
+    if(m.a!=null){b.disabled=true;if(o===q[1])b.classList.add("right");else if(o===m.a)b.classList.add("wrong")}
+    else b.onclick=()=>{m.a=o;if(o===q[1]){m.s++;grant(8,2,"Correct! +8 XP, +2 coins")}else toast("Not quite");save();render()}});
+  if(m.a!=null){const n=el("button","btn go",m.i===4?"Finish":"Next");n.type="button";n.onclick=()=>{m.i++;m.a=null;if(m.i>=5&&m.s===5)grant(25,10,"Perfect round! +25 XP, +10 coins");save();render()}}
+}
+function prune(){["done","swap","used"].forEach(k=>{for(const c in S[k])if(c!==D)delete S[k][c]});save()}
+function tick(){
+  const o=tzParts(),s=Math.max(1,86400-(+o.hour*3600+(+o.minute)*60+(+o.second))),p=v=>String(v).padStart(2,"0");
+  document.getElementById("timer").textContent=p(Math.floor(s/3600))+":"+p(Math.floor(s%3600/60))+":"+p(s%60);
+  if(today()!==D)render();
+}
+let view="today";
+const tabs=document.querySelectorAll(".tabs button");
+tabs.forEach(b=>b.onclick=()=>{const v=b.dataset.v;document.getElementById("todayView").hidden=v!=="today";document.getElementById("bonusView").hidden=v!=="bonus";document.getElementById("shopView").hidden=v!=="shop";document.getElementById("mindView").hidden=v!=="mind";tabs.forEach(t=>t.setAttribute("aria-selected",t===b));view=v;render();window.scrollTo(0,0)});
+let tm;
+function loop(){tick();tm=setTimeout(loop,1000-Date.now()%1000)}
+document.addEventListener("visibilitychange",()=>{clearTimeout(tm);if(!document.hidden)loop()});
+LANG=(S.profile&&S.profile.lang)||(["es","fr"].find(l=>(navigator.language||"").startsWith(l))||"en");
+applyProfile();if(!S.profile)openOnb();
+document.getElementById("o-go").onclick=finishOnb;
+document.getElementById("editp").onclick=openOnb;
+document.getElementById("freeze").onclick=buyFreeze;
+(function(){
+  const svg="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#2a2370'/><path d='M50 14c4 12 18 20 18 38a18 18 0 0 1-36 0c0-10 5-14 8-22 2 6 6 8 8 10 0-10-2-18 2-26z' fill='#f2842b'/><path d='M50 40c2 7 9 11 9 20a9 9 0 0 1-18 0c0-6 4-9 5-14 2 3 3 4 4 5z' fill='#ffd45e'/><rect x='18' y='76' width='64' height='9' rx='4.5' fill='#8a5a33' transform='rotate(-12 50 80)'/><rect x='18' y='76' width='64' height='9' rx='4.5' fill='#6b4226' transform='rotate(12 50 80)'/></svg>";
+  const url="data:image/svg+xml,"+encodeURIComponent(svg);
+  const add=(rel,href,sizes)=>{const l=document.createElement("link");l.rel=rel;l.href=href;if(sizes)l.sizes=sizes;document.head.appendChild(l)};
+  add("icon",url);
+  try{const im=new Image();im.onload=()=>{try{const c=document.createElement("canvas");c.width=c.height=180;const x=c.getContext("2d");x.fillStyle="#2a2370";x.fillRect(0,0,180,180);x.drawImage(im,0,0,180,180);add("apple-touch-icon",c.toDataURL("image/png"),"180x180")}catch(e){}};im.src=url}catch(e){}
+})();
+prune();render();loop();
+</script>
+<script>if("serviceWorker"in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
+</body>
+</html>

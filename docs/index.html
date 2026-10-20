@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life Fire: daily real-life quests</title>
+<meta name="description" content="Life Fire turns your day into a quest. One main quest, three mini quests and ten bonus challenges every day. Free for Android and in your browser.">
+<meta name="theme-color" content="#1b1840">
+<link rel="icon" href="app/icon-192.png">
+<link rel="apple-touch-icon" href="app/icon-192.png">
+<style>
+:root{--bg:#f3f1fa;--ink:#1d2140;--mute:#565c80;--panel:#fff;--line:#d9d6ec;--btn:#b94e0a;--btn-ink:#fff;--link:#4c3fa8}
+@media (prefers-color-scheme:dark){:root{--bg:#12152b;--ink:#eceefb;--mute:#a3a9d0;--panel:#1b1f40;--line:#2f3563;--btn:#f2842b;--btn-ink:#1a1230;--link:#b3abff}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:700;line-height:1.15;margin:0}
+a{color:var(--link)}
+a:focus-visible,.btn:focus-visible{outline:3px solid #ffd45e;outline-offset:3px}
+.wrap{max-width:960px;margin:0 auto;padding:0 22px}
+.hero{background:radial-gradient(ellipse at 70% 100%,#4a2a5e 0,transparent 60%),linear-gradient(180deg,#1b1840,#2a2370);color:#fff;padding:48px 0 56px}
+.hero .wrap{display:grid;grid-template-columns:1fr 280px;gap:32px;align-items:center}
+.hero h1{font-size:clamp(2.6rem,8vw,4.5rem);letter-spacing:-.01em}
+.hero p{margin:14px 0 0;max-width:34ch;font-size:1.2rem;color:#e3e0ff}
+.hero .small{font-size:.95rem;color:#b9b4e8;margin-top:12px}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-block;text-decoration:none;font-weight:800;font-size:1.05rem;padding:14px 22px;border-radius:12px;min-height:48px}
+.btn.primary{background:#f2842b;color:#1a1230}
+.btn.ghost{border:2px solid #8f88d6;color:#fff}
+.btn.primary:hover{background:#ffa04d}
+.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.fire{width:100%;max-width:280px;justify-self:center;overflow:visible}
+.flame-out,.flame-in{transform-box:fill-box;transform-origin:50% 100%}
+@media (prefers-reduced-motion:no-preference){
+ .flame-out{animation:fl 2.4s ease-in-out infinite}
+ .flame-in{animation:fl 1.7s ease-in-out infinite reverse}
+}
+@keyframes fl{0%,100%{transform:scale(1,1) skewX(0)}30%{transform:scale(.96,1.06) skewX(2deg)}60%{transform:scale(1.03,.97) skewX(-2deg)}}
+section{padding:48px 0 8px}
+h2{font-size:1.7rem;margin-bottom:18px}
+.day{display:grid;gap:20px;grid-template-columns:repeat(2,1fr)}
+.day h3{font-size:1.2rem;margin-bottom:4px}
+.day p{margin:0;color:var(--mute);max-width:40ch}
+.steps{padding-left:1.3em;margin:0;max-width:62ch}
+.steps li{margin:0 0 12px;padding-left:6px}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;max-width:62ch;margin-top:20px}
+.note p{margin:0}
+.two{display:grid;gap:32px;grid-template-columns:1fr 1fr}
+footer{padding:40px 0 56px;color:var(--mute);font-size:.95rem}
+@media (max-width:720px){
+ .hero .wrap{grid-template-columns:1fr}
+ .fire{max-width:170px;order:-1;justify-self:start}
+ .day,.two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+ <div class="wrap">
+  <div>
+   <h1>Life Fire</h1>
+   <p>Turn your day into a quest. Small real-life challenges, every day, that you can actually finish.</p>
+   <div class="btns">
+    <a class="btn primary" href="https://github.com/mewethor/life-fire/releases/latest/download/life-fire.apk">Download for Android</a>
+    <a class="btn ghost" href="app/">Open in your browser</a>
+   </div>
+   <p class="small">Free. No ads. No account. For ages 12 and up.</p>
+  </div>
+  <svg class="fire" viewBox="0 0 100 100" role="img" aria-label="A campfire with two crossed logs">
+   <g class="flame-out"><path d="M50 8c4 12 20 21 20 41a20 20 0 0 1-40 0c0-11 5-15 9-24 2 6 6 9 9 11 0-10-2-19 2-28z" fill="#f2842b"/></g>
+   <g class="flame-in"><path d="M50 38c2 8 10 12 10 22a10 10 0 0 1-20 0c0-7 4-10 5-16 2 3 4 5 5 6z" fill="#ffd45e"/></g>
+   <rect x="14" y="78" width="72" height="10" rx="5" fill="#8a5a33" transform="rotate(-11 50 83)"/>
+   <rect x="14" y="78" width="72" height="10" rx="5" fill="#6b4226" transform="rotate(11 50 83)"/>
+  </svg>
+ </div>
+</header>
+
+<main class="wrap">
+ <section>
+  <h2>What a day looks like</h2>
+  <div class="day">
+   <div><h3>One main quest</h3><p>A bigger challenge, like a 30-minute walk without your phone. Worth 100 XP.</p></div>
+   <div><h3>Three mini quests</h3><p>Quick wins that take a few minutes. Worth 25 XP each, and you can swap one.</p></div>
+   <div><h3>Ten bonus quests</h3><p>Optional extras when you want more. Worth 10 XP each.</p></div>
+   <div><h3>A mind game</h3><p>Five questions a day: riddles, logic and things you actually study.</p></div>
+   <div><h3>Streaks and a shop</h3><p>Finish your main quest to keep your streak. Spend coins on streak freezes and avatars.</p></div>
+   <div><h3>Made for you</h3><p>Tell it if you are a student, a university student or a parent, and your quests fit. Your day resets at midnight where you live.</p></div>
+  </div>
+ </section>
+
+ <section>
+  <div class="two">
+   <div>
+    <h2>Install on Android</h2>
+    <ol class="steps">
+     <li>Tap <strong>Download for Android</strong> and wait for the file to finish.</li>
+     <li>Open the file. If Android says it can’t install from this source, tap <strong>Settings</strong> and allow it for your browser or Files app.</li>
+     <li>If Google Play Protect warns you, tap <strong>Install anyway</strong>. The app isn’t in the Play Store.</li>
+     <li>Open Life Fire and answer a few questions to set up your hero.</li>
+    </ol>
+   </div>
+   <div>
+    <h2>On iPhone or any browser</h2>
+    <ol class="steps">
+     <li>Tap <strong>Open in your browser</strong>.</li>
+     <li>In Safari, tap the Share button, then <strong>Add to Home Screen</strong>.</li>
+     <li>In Chrome on Android, open the menu and tap <strong>Install app</strong>.</li>
+    </ol>
+   </div>
+  </div>
+  <div class="note"><p><strong>Your privacy.</strong> Your name, age and progress stay on your device. There are no ads and nothing is sold or tracked. The Android app checks GitHub every few hours to see if a newer version is ready, and shows a banner when there is.</p></div>
+ </section>
+</main>
+
+<footer>
+ <div class="wrap">Life Fire. <a href="https://github.com/mewethor/life-fire/releases">All versions</a></div>
+</footer>
+</body>
+</html>

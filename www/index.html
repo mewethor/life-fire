@@ -446,5 +446,29 @@ document.getElementById("freeze").onclick=buyFreeze;
 prune();render();loop();
 </script>
 
+<script>
+(function(){
+  var V="1.0",REPO="mewethor/life-fire";
+  function newer(a,b){a=a.split(".").map(Number);b=b.split(".").map(Number);for(var i=0;i<3;i++){var x=a[i]||0,y=b[i]||0;if(y>x)return true;if(y<x)return false}return false}
+  try{
+    var last=+localStorage.getItem("lf-upd")||0;
+    if(Date.now()-last<21600000)return;
+    fetch("https://api.github.com/repos/"+REPO+"/releases/latest").then(function(r){return r.ok?r.json():null}).then(function(j){
+      try{localStorage.setItem("lf-upd",String(Date.now()))}catch(e){}
+      if(!j||typeof j.tag_name!=="string")return;
+      var t=j.tag_name.replace(/^v/,"");
+      if(!/^\d+(\.\d+){0,2}$/.test(t)||!newer(V,t))return;
+      var u=typeof j.html_url==="string"&&j.html_url.indexOf("https://github.com/"+REPO+"/")===0?j.html_url:null;
+      if(!u)return;
+      var b=document.createElement("div");b.setAttribute("role","status");
+      b.style.cssText="position:fixed;left:0;right:0;top:0;z-index:30;display:flex;gap:10px;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;background:#f2b84b;color:#1d2140;font:600 14px system-ui,sans-serif";
+      var s=document.createElement("span");s.style.flex="1";s.textContent="A new version of Life Fire is ready.";
+      var a=document.createElement("a");a.href=u;a.target="_blank";a.rel="noopener";a.textContent="Update";a.style.cssText="color:#1d2140;font-weight:800;text-decoration:underline;padding:6px 10px";
+      var x=document.createElement("button");x.type="button";x.textContent="\u2715";x.setAttribute("aria-label","Dismiss");x.style.cssText="background:none;border:0;font-size:18px;color:#1d2140;padding:6px 10px";x.onclick=function(){b.remove()};
+      b.appendChild(s);b.appendChild(a);b.appendChild(x);document.body.appendChild(b);
+    }).catch(function(){});
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
